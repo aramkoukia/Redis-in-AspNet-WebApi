@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/packages
+/Redis-In-AspNet-WebApi/bin
+/Redis-In-AspNet-WebApi/obj/Debug

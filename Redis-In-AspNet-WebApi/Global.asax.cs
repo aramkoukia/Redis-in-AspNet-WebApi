@@ -12,6 +12,7 @@ namespace WebApi2
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+
         }
     }
 }

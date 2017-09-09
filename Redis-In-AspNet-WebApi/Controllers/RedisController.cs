@@ -11,6 +11,8 @@ namespace WebApi2.Controllers
 {
     public class RedisController : ApiController
     {
+        //ConnectionMultiplexer connection = ConnectionMultiplexer.Connect("contoso5.redis.cache.windows.net,abortConnect=false,ssl=true,password=...");
+
         // GET: api/Redis/name
         public int Get(string name)
         {
