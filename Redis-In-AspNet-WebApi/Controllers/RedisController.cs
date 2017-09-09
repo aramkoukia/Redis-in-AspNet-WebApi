@@ -1,6 +1,8 @@
 ﻿using ServiceStack.Redis;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -11,8 +13,20 @@ namespace WebApi2.Controllers
 {
     public class RedisController : ApiController
     {
-        //ConnectionMultiplexer connection = ConnectionMultiplexer.Connect("contoso5.redis.cache.windows.net,abortConnect=false,ssl=true,password=...");
+        // Redis Connection string info
+        private static Lazy<ConnectionMultiplexer> lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
+        {
+            string cacheConnection = ConfigurationManager.AppSettings["CacheConnection"].ToString();
+            return ConnectionMultiplexer.Connect(cacheConnection);
+        });
 
+        public static ConnectionMultiplexer Connection
+        {
+            get
+            {
+                return lazyConnection.Value;
+            }
+        }
         // GET: api/Redis/name
         public int Get(string name)
         {
