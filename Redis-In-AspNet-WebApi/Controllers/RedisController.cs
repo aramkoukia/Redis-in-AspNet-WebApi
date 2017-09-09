@@ -25,21 +25,23 @@ namespace WebApi2.Controllers
             }
         }
         // GET: api/Redis/name
-        public async Task<Person> Get(string name)
+        public async Task<IHttpActionResult> Get(string name)
         {
             IDatabase cache = Connection.GetDatabase();
             var person = await cache.StringGetAsync(name);
-            return JsonConvert.DeserializeObject<Person>(person);
+            if (person.HasValue)
+                return Ok(JsonConvert.DeserializeObject<Person>(person));
+            else
+                return Ok(new Person());
         }
 
         // POST: api/Redis
-        public async Task Post(int age, string name)
+        [HttpPost]
+        public async Task<IHttpActionResult> Post([FromBody] Person person)
         {
-            Person person = new Person();
-            person.Age = age;
-            person.Name = name;
             IDatabase cache = Connection.GetDatabase();
-            await cache.StringSetAsync(name, JsonConvert.SerializeObject(person));
+            await cache.StringSetAsync(person.Name, JsonConvert.SerializeObject(person));
+            return Ok();
         }        
     }
 
