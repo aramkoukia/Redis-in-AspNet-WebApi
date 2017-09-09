@@ -1,13 +1,10 @@
-﻿using ServiceStack.Redis;
+﻿using Newtonsoft.Json;
+using ServiceStack.Redis;
 using StackExchange.Redis;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
-using WebApi2.Manager;
 
 namespace WebApi2.Controllers
 {
@@ -28,28 +25,21 @@ namespace WebApi2.Controllers
             }
         }
         // GET: api/Redis/name
-        public int Get(string name)
+        public async Task<Person> Get(string name)
         {
-
-            RedisClient client = new RedisClient("localhost", 6379);
-            
-            CacheManager cacheManager = new CacheManager(client);
-            Person person = cacheManager.Get<Person>(name);
-
-            return person.Age;
+            IDatabase cache = Connection.GetDatabase();
+            var person = await cache.StringGetAsync(name);
+            return JsonConvert.DeserializeObject<Person>(person);
         }
 
         // POST: api/Redis
-        public void Post(int age, string name)
+        public async Task Post(int age, string name)
         {
-            RedisClient client = new RedisClient("localhost", 6379);
-           
-            CacheManager cacheManager = new CacheManager(client);
             Person person = new Person();
             person.Age = age;
             person.Name = name;
-
-            cacheManager.Set(person);
+            IDatabase cache = Connection.GetDatabase();
+            await cache.StringSetAsync(name, JsonConvert.SerializeObject(person));
         }        
     }
 
